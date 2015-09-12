@@ -147,4 +147,48 @@ describe('Base Routes', function(){
       done();
     });
   });
+  it('Pre Routes should be used at the top of the stack', function(done){
+      sinon.spy(controller, "getCollection");
+      //set up route to test
+      var preRoutes = express.Router();
+      preRoutes.get('/', function(req,res){
+          res.json({'status': 'ok'});
+      });
+      var routeOpts = {preRoutes: preRoutes}
+      var route = require('../../routes/base')(controller, routeOpts);
+      var app = express();
+      app.use('/', route);
+      var agent = request.agent(app);
+      agent
+      .get('/')
+      .expect(200)
+      .end(function(err,res){
+        if(err) done(err);
+        controller.getCollection.calledOnce.should.be.exactly(false);
+        res.body.should.have.property('status');
+        done();
+      });
+  });
+  it('Post Routes should be used at the bottom of the stack', function(done){
+      sinon.spy(controller, "getCollection");
+      //set up route to test
+      var postRoutes = express.Router();
+      postRoutes.get('/', function(req,res){
+          res.json({'status': 'ok'});
+      });
+      var routeOpts = {postRoutes: postRoutes}
+      var route = require('../../routes/base')(controller, routeOpts);
+      var app = express();
+      app.use('/', route);
+      var agent = request.agent(app);
+      agent
+      .get('/')
+      .end(function(err,res){
+        if(err) done(err);
+        controller.getCollection.calledOnce.should.be.exactly(true);
+        done();
+      });
+  });
+  
+  
 });

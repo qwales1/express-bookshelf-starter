@@ -2,14 +2,14 @@ var express = require('express');
 var _ = require('lodash');
 var bodyParser = require('body-parser');
 
-var BaseRouter = function(controller, preRoutes, postRoutes){
+var BaseRouter = function(controller, opts){
   'use strict';
-
+  var opts = opts || {};
   var router = express.Router();
   router.use(bodyParser.json());
   router.use(bodyParser.urlencoded({extended: true}));
-  if(preRoutes && _.isFunction(preRoutes)){
-    router.use('/', preRoutes);
+  if(opts.preRoutes && _.isFunction(opts.preRoutes)){
+    router.use('/', opts.preRoutes);
   }
   router.get('/', function(req,res){
     var params = req.query;
@@ -84,8 +84,8 @@ var BaseRouter = function(controller, preRoutes, postRoutes){
         res.json(JSON.stringify(err));
       });
   });
-  if(postRoutes && _.isFunction(postRoutes)){
-    router.use('/', postRoutes)
+  if(opts.postRoutes && _.isFunction(opts.postRoutes)){
+    router.use('/', opts.postRoutes)
   }
   return router;
 };
