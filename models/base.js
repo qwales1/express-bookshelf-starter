@@ -29,7 +29,7 @@ var BaseModel = bookshelf.Model.extend({
 
   constructor: function() {
 
-    bookshelf.Model.apply(this, arguments); // super()
+    bookshelf.Model.apply(this, arguments);
     this.on('saving', this.validate.bind(this));
     this.on('saving', this.notify.bind(this, 'saving'));
     this.on('saved', this.notify.bind(this, 'saved'));
@@ -65,30 +65,6 @@ var BaseModel = bookshelf.Model.extend({
   notify : function(event){
     var event = this.entityType+':'+event;
     this.trigger(event, {type:this.entityType, data: this.toJSON()});
-  },
-
-  ///////////////////////////////
-  //
-  // Utility method that generates
-  // a random string
-  //
-  ///////////////////////////////
-
-  randomString : function (len){
-    var chars = ['1','2','3','4','5','6','7',
-    '8','9','B','C','D','F','G','H',
-    'J','K','L','M','N','P','Q','R',
-    'S','T','V','W','X','Y','Z'];
-    var max = chars.length;
-    var min = 0;
-    var random = "";
-    for(var i = 0; i < len; i++){
-      var index = _.random(0,(chars.length-1))
-      if(index >= 0 && index < chars.length){
-        random += chars[index];
-      }
-    }
-    return random;
   },
 
   ///////////////////////////////
@@ -147,9 +123,7 @@ var BaseModel = bookshelf.Model.extend({
   ///////////////////////////////
 
   _includeProp : function(prop){
-    var excludedProps = ['limit',
-    'offset', 'fuzzy', 'expand','orderByAsc', 'orderByDesc'];
-    // !! = coerce the indexOf result to boolean
+    var excludedProps = ['limit','offset', 'fuzzy', 'expand','orderByAsc', 'orderByDesc'];
     return excludedProps.indexOf(prop) !== -1 ? false : true;
   }
 
